@@ -6,13 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit" Version="6.2.2-develop.2470" />
-    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="6.2.2-develop.2470" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="6.2.2-develop.2470" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MassTransit.UnitOfWork\MassTransit.UnitOfWork.csproj" />
+    <PackageReference Include="MassTransit" Version="6.2.2" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="6.2.2" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="6.2.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />
   </ItemGroup>
 
 </Project>

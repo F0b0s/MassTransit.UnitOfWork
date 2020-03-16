@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MassTransit.UnitOfWork
+namespace MassTransit.UnitOfWork.Example.Filter
 {
     public class UnitOfWorkSpecification<TConsumer, TMessage> : IPipeSpecification<ConsumerConsumeContext<TConsumer, TMessage>>
         where TConsumer : class

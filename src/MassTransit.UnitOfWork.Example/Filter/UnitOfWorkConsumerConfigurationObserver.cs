@@ -1,6 +1,6 @@
 ﻿using MassTransit.ConsumeConfigurators;
 
-namespace MassTransit.UnitOfWork
+namespace MassTransit.UnitOfWork.Example.Filter
 {
     public class UnitOfWorkConsumerConfigurationObserver : IConsumerConfigurationObserver
     {

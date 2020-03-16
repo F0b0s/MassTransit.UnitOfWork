@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace MassTransit.UnitOfWork
+namespace MassTransit.UnitOfWork.Example.Filter
 {
     public class UnitOfWorkFilter<TContext, TMessage> : IFilter<TContext>
             where TContext : class, ConsumeContext<TMessage>
@@ -17,6 +17,10 @@ namespace MassTransit.UnitOfWork
             Console.WriteLine("Before uow execution....");
 
             await next.Send(context);
+
+            context.TryGetPayload(out IServiceProvider serviceProvider);
+            var dependency = (IDependency)serviceProvider.GetService(typeof(IDependency));
+            dependency.DoSomething();
 
             Console.WriteLine("After uow execution....");
         }

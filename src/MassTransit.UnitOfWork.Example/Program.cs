@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MassTransit.UnitOfWork.Example.Filter;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading.Tasks;
 
 namespace MassTransit.UnitOfWork.Example
@@ -8,23 +10,45 @@ namespace MassTransit.UnitOfWork.Example
         public string Text { get; set; }
     }
 
+    public interface IDependency
+    {
+        void DoSomething() => Console.WriteLine("Hello world.");
+    }
+
+    public class DependencyImplementation : IDependency
+    {
+        public void DoSomething() => Console.WriteLine("Hello world from implementation.");
+    }
+
     class Program
     {
         public static async Task Main()
         {
-            var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
+            var serviceCollection = new ServiceCollection()
+                .AddTransient<IDependency, DependencyImplementation>();
+
+            serviceCollection.AddMassTransit(x =>
             {
-                var host = sbc.Host("rabbitmq://127.0.0.1");
+                x.AddConsumer<MessageConsumer>();
 
-                sbc.ConnectConsumerConfigurationObserver(new UnitOfWorkConsumerConfigurationObserver());
-
-                sbc.ReceiveEndpoint("test_queue", ep =>
+                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(sbc =>
                 {
-                    ep.Consumer<MessageConsumer>();
-                });
-            });
+                    var host = sbc.Host("rabbitmq://127.0.0.1");
 
-            await bus.StartAsync(); // This is important!
+                    sbc.ConnectConsumerConfigurationObserver(new UnitOfWorkConsumerConfigurationObserver());
+
+                    sbc.ReceiveEndpoint("test_queue", ep =>
+                    {
+                        ep.ConfigureConsumer<MessageConsumer>(provider);
+                    });
+                }));                
+              });
+
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            var bus = serviceProvider.GetRequiredService<IBusControl>();
+
+            await bus.StartAsync();
 
             await bus.Publish(new Message { Text = "Hi" });
 
